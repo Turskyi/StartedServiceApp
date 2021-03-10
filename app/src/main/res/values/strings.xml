@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Started Service App</string>
+    <string name="question">What is the secret of comedy?</string>
+    <string name="response">Timing!</string>
+    <string name="channel_name">channel name</string>
+    <string name="channel_description">channel description</string>
+</resources>
