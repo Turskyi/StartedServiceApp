@@ -20,10 +20,6 @@ class DelayedMessageService : JobIntentService() {
         private const val JOB_ID = 2
     }
 
-    fun enqueueWork(context: Context, intent: Intent) {
-        enqueueWork(context, DelayedMessageService::class.java, JOB_ID, intent)
-    }
-
     override fun onHandleWork(intent: Intent) {
         synchronized(this) {
             try {
@@ -36,6 +32,10 @@ class DelayedMessageService : JobIntentService() {
         showText(text)
     }
 
+    fun enqueueWork(context: Context, intent: Intent) {
+        enqueueWork(context, DelayedMessageService::class.java, JOB_ID, intent)
+    }
+
     private fun createNotificationChannel() {
         /* Create the NotificationChannel, but only on API 26+ because
          the NotificationChannel class is new and not in the support library */
@@ -46,25 +46,24 @@ class DelayedMessageService : JobIntentService() {
             val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
                 description = descriptionText
             }
-            /* Register the channel with the system */
-            val notificationManager: NotificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            // Register the channel with the system
+            val notificationManager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
     }
 
     private fun showText(text: String?) {
         createNotificationChannel()
-        /* Create a notification builder */
+        // Create a notification builder
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher)
-            .setContentTitle(getString(R.string.question))
-            .setContentText(text)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setVibrate(longArrayOf(0, 1000))
-            .setAutoCancel(true)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(getString(R.string.question))
+                .setContentText(text)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setVibrate(longArrayOf(0, 1000))
+                .setAutoCancel(true)
 
-        /* Create an action */
+        // Create an action
         val actionIntent = Intent(this, MainActivity::class.java)
         val stackBuilder: TaskStackBuilder = TaskStackBuilder.create(this)
         stackBuilder.addParentStack(MainActivity::class.java)
@@ -80,8 +79,8 @@ class DelayedMessageService : JobIntentService() {
 
         builder.setContentIntent(actionPendingIntent)
 
-        /* Issue the notification */
-        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        // Issue the notification
+        val notificationManager: NotificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(NOTIFICATION_ID, builder.build())
     }
 }
